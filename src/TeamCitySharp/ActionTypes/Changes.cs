@@ -2,6 +2,7 @@
 using System.Linq;
 using TeamCitySharp.Connection;
 using TeamCitySharp.DomainEntities;
+using TeamCitySharp.Locators;
 
 namespace TeamCitySharp.ActionTypes
 {
@@ -12,6 +13,16 @@ namespace TeamCitySharp.ActionTypes
         internal Changes(TeamCityCaller caller)
         {
             _caller = caller;
+        }
+
+        public List<Change> ByBuildLocator(BuildLocator locator)
+        {
+            var changeWrapper = _caller.GetFormat<ChangeWrapper>("/app/rest/changes?locator=build:({0})", locator);
+            if (int.Parse(changeWrapper.Count) > 0)
+            {
+                return changeWrapper.Change;
+            }
+            return new List<Change>();
         }
 
         public List<Change> All()
@@ -30,7 +41,7 @@ namespace TeamCitySharp.ActionTypes
 
         public List<Change> ByBuildConfigId(string buildConfigId)
         {
-            var changeWrapper = _caller.GetFormat<ChangeWrapper>("/app/rest/changes?buildType={0}", buildConfigId);
+            var changeWrapper = _caller.GetFormat<ChangeWrapper>("/app/rest/changes?buildTypeId={0}", buildConfigId);
 
             return changeWrapper.Change;
         }
