@@ -26,6 +26,11 @@ namespace TeamCitySharp.ActionTypes
             return new List<Build>();
         }
 
+        public Build ByBuildId(long buildId)
+        {
+            return _caller.GetFormat<Build>("/app/rest/builds/id:{0}", buildId);
+        }
+
         public Build LastBuildByAgent(string agentName)
         {
             return ByBuildLocator(BuildLocator.WithDimensions(
